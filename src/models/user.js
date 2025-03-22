@@ -7,6 +7,8 @@ const userSchema = new Schema({
     password: {type: String, required: true},
     profilePic: {type: String, default: "https://api.dicebear.com/7.x/identicon/svg?seed=default"},
     role: {type: String, enum: ["user", "admin"], default: "user"},
+    resetToken: {type: String},
+    resetTokenExpires: {type: Date},
 }, {timestamps: true});
 
 
@@ -18,7 +20,8 @@ userSchema.pre("save", async function(next){
 })
 
 userSchema.methods.comparePassword = async function(password){
-    return await bcrypt.compare(password, this.password)
+    const match = await bcrypt.compare(password, this.password);
+    return match
 }
 
 
