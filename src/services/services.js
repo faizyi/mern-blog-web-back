@@ -4,17 +4,13 @@ import { configs } from "../config/config.js";
 
 export const generateToken = (user, res) => {
     const payload = {
-        // name: user.username,
-        // email: user.email,
-        // profile: user.profilePic,
-        // role: user.role,
         id: user._id
     }
     const token = jwt.sign(payload, configs.jwtKey);
     res.cookie("jwt", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "None",
         maxAge: 24 * 60 * 60 * 1000,
     });
     return token
@@ -43,13 +39,13 @@ export const sendResetPasswordEmail = async (email, token) =>{
         }
     });
 
-    const resetLink = `http://localhost:5173/reset-password/${token}`
+    const resetLink = `https://mern-blog-web-front.vercel.app/reset-password/${token}`
 
     const mailOptions = {
         from: "faiznoor492@gmail.com",
         to: email,
         subject: "Password Reset Request",
-        html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 15 minutes.</p>`,
+        html: `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 5 minutes.</p>`,
     };
 
     await transpoter.sendMail(mailOptions);

@@ -5,14 +5,14 @@ export const register = async(req, res)=>{
     try {
         const {username, email, password} = req.body;
         const user = await User.findOne({email});
-        if(user) return res.status(400).json({message: "User already exists"});
+        if(user) return res.status(400).json({message: "Someone already registered with this email"});
         const newUser = await new User({username, email, password}).save();
         await newUser.save();
         const token = generateToken(newUser, res)
         const {password: _, ...userData} = newUser.toObject();
         res.status(200).json({message: "User created successfully", userData});
     } catch (error) {
-        res.status(500).json("Server error");
+        res.status(500).json({ message: "Server error" });
     }
 }
 
@@ -28,7 +28,7 @@ export const login = async(req, res)=>{
         const {password: _, ...userData} = user.toObject();
         res.status(200).json({message: "User logged in successfully", userData});
     } catch (error) {
-        res.status(500).json("Server error");
+        res.status(500).json({ message: "Server error" });
     }
 }
 
@@ -69,7 +69,7 @@ export const updateProfile = async (req, res) => {
 
         res.status(200).json({ userInfo: user });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -83,34 +83,32 @@ export const forgotPassword = async (req, res) => {
         //generate token
         const token = crypto.randomBytes(32).toString("hex");
         user.resetToken = token;
-        user.resetTokenExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+        user.resetTokenExpires = Date.now() + 5 * 60 * 1000; // 15 minutes
         await user.save();
 
         await sendResetPasswordEmail(email, token);
 
-        res.status(200).json({ message: "Password reset email sent" });
+        res.status(200).json({ message: "Password reset link sent successfully to your email." });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        res.status(500).json({ message: "Server error" });
     }
 }
 
 
 export const resetPassword = async (req, res) => {
     try {
-        // const { token } = req.params;
-        const { password } = req.body;
-        console.log(password);
-        
-        // const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
-        // if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+        const { token }= req.params;
+        const { password} = req.body;
+        const user = await User.findOne({ resetToken: token, resetTokenExpires: { $gt: Date.now() } });
+        if (!user) return res.status(400).json({ message: "Token is invalid or has expired. Please try again." });
 
-        // user.password = newPassword;
-        // user.resetToken = undefined;
-        // user.resetTokenExpires = undefined;
-        // await user.save();
+        user.password = password;
+        user.resetToken = undefined;
+        user.resetTokenExpires = undefined;
+        await user.save();
 
         res.status(200).json({ message: "Password Updated successful" });
     } catch (error) {
-        res.status(500).json({ message: "Server error", error });
+        res.status(500).json({ message: "Server error" });
     }
 }
