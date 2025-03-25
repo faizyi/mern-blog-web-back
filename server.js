@@ -5,6 +5,7 @@ import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
 import { connectDB } from "./src/db/connection.js";
 import userRoutes from "./src/routes/user.js";
+import blogRoutes from "./src/routes/blog.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,9 +18,9 @@ const PORT = 5001;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
-app.use("/public/userProfile", express.static(path.join(__dirname, "public/userProfile")));
+app.use("/userProfile", express.static(path.join(__dirname, "public/userProfile")));
 app.use(cors({
-    origin: "https://mern-blog-web-front.vercel.app",
+    origin: "http://localhost:5173",
     credentials: true
 }));
 
@@ -29,6 +30,7 @@ app.get("/", (req, res)=>{
     res.send("Server")
 })
 app.use("/user", userRoutes);
+app.use("/blog", blogRoutes);
 
 //DB Connection
 connectDB();

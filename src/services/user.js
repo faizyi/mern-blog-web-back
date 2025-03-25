@@ -50,3 +50,5 @@ export const sendResetPasswordEmail = async (email, token) =>{
 
     await transpoter.sendMail(mailOptions);
 }
+
+

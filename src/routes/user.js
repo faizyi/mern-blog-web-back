@@ -1,29 +1,33 @@
 import { Router } from "express";
 import multer from "multer";
-import fs from "fs";
-import path from "path";
-import { forgotPassword, getUserProfile, login, logout, register,
+import {CloudinaryStorage} from "multer-storage-cloudinary";
+import { deleteUser, forgotPassword, getUserProfile, login, logout, register,
      resetPassword, updateProfile, } from "../controllers/user.js";
 import { protectedRoute } from "../middleware/middlewares.js";
+import { v2 as cloudinary } from "cloudinary";
 
+cloudinary.config({
+    cloud_name: 'dkhq7x5lc',
+    api_key: '333898237965564',
+    api_secret: 'fnKkWkpN0B2xkL2fCoxnhPO2qmo',
+});
 
 const router = Router();
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb)=>{
-        return cb(null, "./public/userProfile")
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "userProfile",
+        format: async (req, file) => "png",
+        public_id: (req, file) => file.originalname.split(".")[0] + "_" + Date.now(),
     },
-    filename: (req, file, cb)=>{
-        const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1E9);
-        console.log(uniqueName)
-        return cb(null, `${uniqueName}-${file.originalname}`)
-    }
 })
 const upload = multer({ storage });
 
 router.post("/register", register);
 router.post("/login", login);
 router.get("/logout", logout);
+router.post("/delete-user", protectedRoute, deleteUser);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 router.put("/update-profile", protectedRoute, upload.single("profilePic"), updateProfile);
