@@ -28,7 +28,7 @@ const router = Router();
 router.post("/create", protectedRoute, upload.single("blogImage"), createBlog);
 router.get("/all-blogs", getAllBlogs);
 router.get("/:id",
-     protectedRoute,
+    //  protectedRoute,
       getBlogById);
 router.post("/addComment/:id",
      protectedRoute,
