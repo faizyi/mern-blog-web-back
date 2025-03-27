@@ -2,7 +2,7 @@ import { Router } from "express";
 import {CloudinaryStorage} from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
-import { createBlog, getAllBlogs, getBlogById } from "../controllers/blog.js";
+import { addComment, createBlog, getAllBlogs, getBlogById } from "../controllers/blog.js";
 import { protectedRoute } from "../middleware/middlewares.js";
 
 cloudinary.config({
@@ -26,6 +26,11 @@ const router = Router();
 
 router.post("/create", protectedRoute, upload.single("blogImage"), createBlog);
 router.get("/all-blogs", getAllBlogs);
-router.get("/blog/:id", getBlogById);
+router.post("/:id",
+    //  protectedRoute,
+      getBlogById);
+router.post("/addComment/:id",
+     protectedRoute,
+      addComment);
 
 export default router;
