@@ -4,7 +4,8 @@ import {CloudinaryStorage} from "multer-storage-cloudinary";
 import { deleteUser, forgotPassword, getUserProfile, login, logout, register,
      resetPassword, updateProfile, } from "../controllers/user.js";
 import { protectedRoute } from "../middleware/middlewares.js";
-import { v2 as cloudinary } from "cloudinary";
+import pkg from 'cloudinary';
+const { v2: cloudinary } = pkg;
 
 cloudinary.config({
     cloud_name: 'dkhq7x5lc',
