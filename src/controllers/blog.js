@@ -28,17 +28,17 @@ export const getAllBlogs = async (req, res) => {
 
 export const getBlogById = async (req, res) => {
     const { id } = req.params;
-    const { userId } = req.body;
+    // const { userId } = req.body;
     try {
-        const blog = await Blog.findById(req.user._id).populate("user");
+        const blog = await Blog.findById(id).populate("user");
         const comments = await Comment.find({ blog: id }).populate("user");
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }
-        // if (blog.user._id.toString() !== req.user._id.toString()) {
-        //     blog.views += 1;
-        //     await blog.save();
-        // }
+        if (blog.user._id.toString() !== req.user._id.toString()) {
+            blog.views += 1;
+            await blog.save();
+        }
         res.status(201).json({ blog, comments, message: "Blog fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error" });
