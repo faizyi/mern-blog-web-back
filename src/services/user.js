@@ -6,14 +6,18 @@ export const generateToken = (user, res) => {
     const payload = {
         id: user._id
     }
-    const token = jwt.sign(payload, configs.jwtKey);
-    res.cookie("jwt", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 24 * 60 * 60 * 1000,
-    });
-    return token
+    try {
+        const token = jwt.sign(payload, "kjihuigefvvhcvasuciuaywtewpwjvnjbvhvhcaicjbhvtwpijirufvvvdcabsejifyrgfbeueifbbef");
+        res.cookie("jwt", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "None",
+            maxAge: 24 * 60 * 60 * 1000,
+        });
+        return token
+    } catch (error) {
+        throw new Error("Token generation failed");
+    }
 }
 
 export const verifyToken = (token) => {
@@ -22,7 +26,7 @@ export const verifyToken = (token) => {
         const payload = jwt.verify(token, configs.jwtKey);
         return payload
     } catch (error) {
-        return null
+        throw new Error("Token generation failed");
     }
 }
 
