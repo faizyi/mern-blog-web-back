@@ -7,7 +7,7 @@ export const generateToken = (user, res) => {
         id: user._id
     }
     try {
-        const token = jwt.sign(payload, configs.jwtKey);
+        const token = jwt.sign(payload, "kjihuigefvvhcvasuciuaywtewpwjvnjbvhvhcaicjbhvtwpijirufvvvdcabsejifyrgfbeueifbbef");
         res.cookie("jwt", token, {
             httpOnly: true,
             secure: true,
@@ -23,7 +23,7 @@ export const generateToken = (user, res) => {
 export const verifyToken = (token) => {
     if(!token) return null
     try {
-        const payload = jwt.verify(token, configs.jwtKey);
+        const payload = jwt.verify(token, "kjihuigefvvhcvasuciuaywtewpwjvnjbvhvhcaicjbhvtwpijirufvvvdcabsejifyrgfbeueifbbef");
         return payload
     } catch (error) {
         throw new Error("Token generation failed");
