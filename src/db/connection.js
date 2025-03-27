@@ -4,7 +4,7 @@ import { configs } from "../config/config.js";
 
 export const connectDB = async () => {
     try {
-        await mongoose.connect(configs.mongoUrl, {
+        await mongoose.connect("mongodb+srv://faiz557564:9G6sbBnJOCB5lsBt@cluster0.syog7.mongodb.net/mern-blog-web", {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
