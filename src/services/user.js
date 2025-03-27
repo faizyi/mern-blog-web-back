@@ -7,7 +7,7 @@ export const generateToken = (user, res) => {
         id: user._id
     }
     try {
-        const token = jwt.sign(payload, "kjihuigefvvhcvasuciuaywtewpwjvnjbvhvhcaicjbhvtwpijirufvvvdcabsejifyrgfbeueifbbef");
+        const token = jwt.sign(payload, configs.jwtKey);
         res.cookie("jwt", token, {
             httpOnly: true,
             secure: true,
