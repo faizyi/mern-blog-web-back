@@ -32,12 +32,10 @@ export const getBlogById = async (req, res) => {
     
     try {
         const blog = await Blog.findById(id).populate("user");
-        console.log(userId, blog.user._id.toString());
         const comments = await Comment.find({ blog: id }).populate("user");
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }
-        // if(!req.user) return res.status(401).json({blog, comments, message: "Unauthorized. Please login" });
         if (userId && blog.user._id.toString() !== userId) {
             blog.views += 1;
             await blog.save();
@@ -55,8 +53,8 @@ export const addComment = async (req, res) => {
         const user = await User.findById(req.user._id);
         if (!user) return res.status(401).json({ message: "Unauthorized. Please login" });
         if (loginUserId === blogUserId) return res.status(400).json({ message: "You cannot comment on your own blog" });
-        const comments = await Comment.create({ comment, user: loginUserId, blog: id });
-        res.status(201).json({ comments, message: "Comment added successfully" });
+        const comments = await Comment.create({ comment, user: req.user._id, blog: id });
+        res.status(201).json({ comments, message: "Comment added successfully, Refesh the page." });
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }
