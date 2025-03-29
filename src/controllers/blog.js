@@ -19,7 +19,8 @@ export const createBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find({}).populate("user");
+        const blogs = await Blog.find({}).populate("user")
+        // const comments = await Comment.find({}).populate("user");
         res.status(201).json({ blogs, message: "Blogs fetched successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error" });
@@ -55,6 +56,34 @@ export const addComment = async (req, res) => {
         if (loginUserId === blogUserId) return res.status(400).json({ message: "You cannot comment on your own blog" });
         const comments = await Comment.create({ comment, user: req.user._id, blog: id });
         res.status(201).json({ comments, message: "Comment added successfully, Refesh the page." });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const delBlog = async(req, res) => {
+    const { id } = req.params;
+    try {
+        const blog = await Blog.findByIdAndDelete(id);
+        if (!blog) return res.status(404).json({ message: "Blog not found" });
+        const comments = await Comment.deleteMany({ blog: id });
+        res.status(200).json({ blog, message: "Blog deleted successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
+}
+
+export const editBlog = async(req, res) => {
+    const { id } = req.params;
+    const  data  = JSON.parse(req.body.data);
+    const file = req.file
+    try {
+        const blog = await Blog.findByIdAndUpdate(id,
+            { $set: data, image: file?.path || data.image },
+            { new: true }
+        );
+        if (!blog) return res.status(404).json({ message: "Blog not found" });
+        res.status(200).json({ blog, message: "Blog updated successfully" });
     } catch (error) {
         res.status(500).json({ message: "Server error" });
     }

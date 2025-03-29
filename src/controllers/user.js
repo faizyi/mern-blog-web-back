@@ -1,3 +1,4 @@
+import { Blog } from "../models/blog.js";
 import { User } from "../models/user.js";
 import { generateToken, sendResetPasswordEmail } from "../services/user.js";
 import crypto from "crypto";
@@ -44,6 +45,7 @@ export const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.user._id);
         if (!user) return res.status(404).json({ message: "User not found" });
+        const blog = await Blog.deleteMany({ user: req.user._id });
         res.clearCookie("jwt");
         res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
