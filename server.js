@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { connectDB } from "./src/db/connection.js";
 import userRoutes from "./src/routes/user.js";
 import blogRoutes from "./src/routes/blog.js";
+import aiRoutes from "./src/AI/routes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,6 +33,7 @@ app.get("/", (req, res)=>{
 })
 app.use("/user", userRoutes);
 app.use("/blog", blogRoutes);
+app.use("/blog/ai", aiRoutes);
 
 //DB Connection
 connectDB();
